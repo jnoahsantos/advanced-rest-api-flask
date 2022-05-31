@@ -1,7 +1,9 @@
+from code.models.item import ItemJSON
 from db import db
-from typing import Dict, List
+from typing import Dict, List, Union
+from models.item import ItemJSON
 
-
+storeJSON = Dict[str, Union[int, str, List[ItemJSON]]]
 class StoreModel(db.Model):
     __tablename__ = 'stores'
 
@@ -13,7 +15,7 @@ class StoreModel(db.Model):
     def __init__(self, name: str):
         self.name = name
 
-    def json(self) -> Dict:
+    def json(self) -> storeJSON:
         return {
             'id': self.id,
             'name': self.name,
