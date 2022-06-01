@@ -8,7 +8,7 @@ from flask_jwt_extended import (
     get_jwt,
 )
 from models.user import UserModel
-from blacklist import BLACKLIST
+from blocklist import BLOCKLIST
 
 BLANK_ERROR = "'{}' cannot be blank."
 USER_ALREADY_EXISTS = "A user with that username already exists."
@@ -16,7 +16,7 @@ CREATED_SUCCESSFULLY = "User created successfully."
 USER_NOT_FOUND = "User not found."
 USER_DELETED = "User deleted."
 INVALID_CREDENTIALS = "Invalid credentials!"
-USER_LOGGED_OUT = "User <id={}> successfully logged out."
+USER_LOGGED_OUT = "User <id={user_id}> successfully logged out."
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument(
@@ -86,7 +86,7 @@ class UserLogout(Resource):
     def post(cls):
         jti = get_jwt()["jti"]  # jti is "JWT ID", a unique identifier for a JWT.
         user_id = get_jwt_identity()
-        BLACKLIST.add(jti)
+        BLOCKLIST.add(jti)
         return {"message": USER_LOGGED_OUT.format(user_id)}, 200
 
 
