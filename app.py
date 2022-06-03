@@ -6,6 +6,7 @@ from ma import ma
 from db import db
 from blocklist import BLOCKLIST
 from resources.user import UserRegister, UserLogin, User, TokenRefresh, UserLogout
+from resources.item import ItemList, Item
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
@@ -34,6 +35,8 @@ api.add_resource(User, "/user/<int:user_id>")
 api.add_resource(UserLogin, "/login")
 api.add_resource(TokenRefresh, "/refresh")
 api.add_resource(UserLogout, "/logout")
+api.add_resource(Item "/item/<string=name>")
+api.add_resource(ItemList "/items")
 
 if __name__ == "__main__":
     db.init_app(app)
