@@ -5,7 +5,7 @@ from schemas.item import ItemSchema
 
 
 class StoreSchema(ma.SQLAlchemyAutoSchema):
-    items = ma.Neste(ItemSchema, many=True)
+    items = ma.Nested(ItemSchema, many=True)
     class Meta:
         model = StoreModel
         load_only = ("store",)
