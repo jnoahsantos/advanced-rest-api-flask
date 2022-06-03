@@ -4,18 +4,13 @@ from db import db
 
 UserJSON = Dict[str, Union[int, str]]
 
-
 class UserModel(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    password = db.Column(db.String(80))
+    username = db.Column(db.String(80), nullable = False, unique=True)
+    password = db.Column(db.String(80), nuullable = False)
 
-    def __init__(self, username: str, password: str):
-        self.username = username
-        self.password = password
-        
     @classmethod
     def find_by_username(cls, username: str) -> "UserModel":
         return cls.query.filter_by(username=username).first()
