@@ -4,16 +4,20 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-flask-jwt-extended = "*"
-flask-restful = "*"
-flask-sqlalchemy = "*"
-marshmallow = "*"
+requests = "*"
+python-dotenv = "*"
+Flask = "*"
+Flask-JWT-Extended = "*"
+Flask-RESTful = "*"
+Flask-SQLAlchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
-requests = "*"
+marshmallow = "==3.0.0b12"
 
 [dev-packages]
 
 [requires]
 python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
