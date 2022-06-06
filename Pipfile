@@ -11,6 +11,7 @@ flask-sqlalchemy = "*"
 marshmallow = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
+requests = "*"
 
 [dev-packages]
 
