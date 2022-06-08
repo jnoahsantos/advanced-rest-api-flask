@@ -7,7 +7,7 @@ If language changes, set `libs.strings.default_locale` and run `libs.strings.ref
 """
 import json
 
-default_locale = "es-es"
+default_locale = "en-gb"
 cached_strings = {}
 
 
