@@ -9,10 +9,10 @@ Flask = "*"
 Flask-JWT-Extended = "*"
 Flask-RESTful = "*"
 Flask-SQLAlchemy = "*"
-Flask-OAuthlib = "*"
 python-dotenv = "*"
 marshmallow-sqlalchemy = "*"
 marshmallow = "==3.0.0b12"
+flask-oauthlib = "*"
 
 [dev-packages]
 
