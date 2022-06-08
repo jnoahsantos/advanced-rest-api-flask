@@ -4,10 +4,14 @@ from hmac import compare_digest
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
+    get_jwt_identity,
+    jwt_required,
+    get_jwt,
 )
-from libs.strings import gettext
 from models.user import UserModel
 from schemas.user import UserSchema
+from blocklist import BLOCKLIST
+from libs.strings import gettext
 
 user_schema = UserSchema()
 
@@ -58,7 +62,7 @@ class UserLogin(Resource):
 
         user = UserModel.find_by_username(user_data.username)
 
-        if user and user.password and compare_digest(user.password, user_data.password):
+        if user and compare_digest(user.password, user_data.password):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {"access_token": access_token, "refresh_token": refresh_token}, 200
@@ -66,18 +70,20 @@ class UserLogin(Resource):
         return {"message": gettext("user_invalid_credentials")}, 401
 
 
-class SetPassword(Resource):
+class UserLogout(Resource):
     @classmethod
-    @jwt_required(fresh=True)
+    @jwt_required()
     def post(cls):
-        user_json = request.get_json()
-        user_data = user_schema.load(user_json)
-        user = UserModel.find_by_username(user_data.username)
+        jti = get_jwt()["jti"]  # jti is "JWT ID", a unique identifier for a JWT.
+        user_id = get_jwt_identity()
+        BLOCKLIST.add(jti)
+        return {"message": gettext("user_logged_out").format(user_id)}, 200
 
-        if not user:
-            return {"message": gettext("user_not_found")}, 400
 
-        user.password = user_data.password
-        user.save_to_db()
-
-        return {"message": gettext("user_password_updated")}, 201
+class TokenRefresh(Resource):
+    @classmethod
+    @jwt_required(refresh=True)
+    def post(cls):
+        current_user = get_jwt_identity()
+        new_token = create_access_token(identity=current_user, fresh=False)
+        return {"access_token": new_token}, 200
