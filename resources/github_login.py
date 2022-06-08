@@ -14,10 +14,22 @@ class GithubLogin(Resource):
         return github.authorize(callback="http://localhost:5000/login/github/authorized")
 
 
+# Get authorization
+# Create user
+# Save github token to user
+# Create access token
+# Return JWT
+# Tokengetter will then use the current user to load token from database
 class GithubAuthorize(Resource):
     @classmethod
     def get(cls):
         resp = github.authorized_response()
+        if resp is None or resp.get('access_token') is None:
+            error_response = {
+                "error": request.args['error'],
+                "error_description": request.args['error_description']
+            }
+            return error_response
 
         g.access_token = resp['access_token']
         github_user = github.get('user')  # this uses the access_token from the tokengetter function
