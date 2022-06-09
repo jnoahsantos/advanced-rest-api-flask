@@ -4,7 +4,6 @@ import stripe
 from db import db
 from typing import List
 
-
 CURRENCY = "usd"
 
 
@@ -29,20 +28,15 @@ class OrderModel(db.Model):
     items = db.relationship("ItemsInOrder", back_populates="order")
 
     @property
-    def description(self) -> str:
+    def description(self):
         """
         Generates a simple string representing this order, in the format of "5x chair, 2x table"
         """
-        item_counts = [f"{item_data.quantity}x {item_data.item.name}" for item_data in self.items]
+        item_counts = [f"{i.quantity}x {i.item.name}" for i in self.items]
         return ",".join(item_counts)
 
     @property
-    def amount(self) -> int:
-        """
-        Calculates the total amount to charge for this order.
-        Assumes item price is in USD–multi-currency becomes much tricker!
-        :return int: total amount of cents to be charged in this order.x`
-        """
+    def amount(self):
         return int(sum([item_data.item.price * item_data.quantity for item_data in self.items]) * 100)
 
     @classmethod
@@ -54,23 +48,16 @@ class OrderModel(db.Model):
         return cls.query.filter_by(id=_id).first()
 
     def charge_with_stripe(self, token: str) -> stripe.Charge:
-        # Set your secret key: remember to change this to your live secret key in production
-
-        # See your keys here: https://dashboard.stripe.com/account/apikeys
         stripe.api_key = os.getenv("STRIPE_API_KEY")
 
         return stripe.Charge.create(
-            amount=self.amount,
+            amount=self.amount,  # amount of cents (100 means USD$1.00)
             currency=CURRENCY,
             description=self.description,
             source=token
         )
 
     def set_status(self, new_status: str) -> None:
-        """
-        Sets the new status for the order and saves to the database—so that an order is never not committed to disk.
-        :param new_status: the new status for this order to be saved.
-        """
         self.status = new_status
         self.save_to_db()
 
