@@ -11,6 +11,15 @@ order_schema = OrderSchema()
 
 
 class Order(Resource):
+    @classmethod
+    def get(cls):
+        """
+        This endpoint is solely for testing purpose so that we can get a better idea what is happening
+        for each successful/failed charge.
+        :return: a list of all orders
+        """
+        # You could also define a `OrderSchema(many=True)` above, like we did for items and stores!
+        return order_schema.dump(OrderModel.find_all(), many=True), 200
 
     @classmethod
     def post(cls):
